@@ -1,13 +1,15 @@
 /* eslint-disable no-console */
+const { SERVER_MESSAGE, SERVER_CODE } = require('../utils/messages');
+
 module.exports = (err, req, res, next) => {
   console.log(err);
   // console.log(req);
-  const { statusCode = 500, message } = err;
+  const { statusCode = SERVER_CODE, message } = err;
   res
     .status(statusCode)
     .send({
-      message: statusCode === 500
-        ? 'На сервере произошла ошибка.'
+      message: statusCode === SERVER_CODE
+        ? SERVER_MESSAGE
         : message,
     });
   next();

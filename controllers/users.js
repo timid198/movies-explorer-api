@@ -2,7 +2,12 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 
-const { NODE_ENV, JWT_SECRET } = process.env;
+const { NODE_ENV, JWT_SECRET } = require('../utils/constants');
+const {
+  BAD_REQUEST_MESSAGE, CAST_ERROR, VALIDATION_ERROR, MONGO_ERR_CODE,
+  MONGO_ERROR, CONFLICT_MESSAGE, NOT_FOUND_MESSAGE, UNAUTHORIZED_MESSAGE,
+  AUTHORIZED_BUT_FORBIDDEN_CODE, NOT_FOUND_CODE, AUTHORIZATION_FAIL_MESSAGE,
+} = require('../utils/messages');
 const BadRequestError = require('../errors/bad-request-err');
 const AuthorizedButForbiddenError = require('../errors/authorized-but-forbidden-err');
 const UnauthorizedError = require('../errors/unauthorized-err');
@@ -20,11 +25,11 @@ module.exports = {
       })
         .then((user) => res.send({ email: user.email, name: user.name }))
         .catch((err) => {
-          if (err.name === 'ValidationError') {
-            throw new BadRequestError('Переданы некорректные данные в метод создания пользователя.');
+          if (err.name === VALIDATION_ERROR) {
+            throw new BadRequestError(BAD_REQUEST_MESSAGE);
           }
-          if (err.name === 'MongoError' && err.code === 11000) {
-            throw new ConflictError('Адрес электронной почты уже используется.');
+          if (err.name === MONGO_ERROR && err.code === MONGO_ERR_CODE) {
+            throw new ConflictError(CONFLICT_MESSAGE);
           }
         }))
       .catch(next);
@@ -35,19 +40,19 @@ module.exports = {
     User.findById(authUser)
       .then((user) => {
         if (!user) {
-          throw new NotFoundError('Пользователь не найден.');
+          throw new NotFoundError(NOT_FOUND_MESSAGE);
         }
         if (`${user._id}` === `${authUser}`) {
           res.send({ email: user.email, name: user.name });
         }
-        throw new AuthorizedButForbiddenError('Вы не авторизованы.');
+        throw new AuthorizedButForbiddenError(UNAUTHORIZED_MESSAGE);
       })
       .catch((err) => {
-        if (err.statusCode === 404 || err.statusCode === 403) {
+        if (err.statusCode === NOT_FOUND_CODE || err.statusCode === AUTHORIZED_BUT_FORBIDDEN_CODE) {
           throw err;
         }
-        if (err.name === 'CastError') {
-          throw new BadRequestError('Переданы некорректные данные в метод создания пользователя.');
+        if (err.name === CAST_ERROR) {
+          throw new BadRequestError(BAD_REQUEST_MESSAGE);
         }
       })
       .catch(next);
@@ -59,21 +64,21 @@ module.exports = {
       User.findByIdAndUpdate(req.user._id, { name, email }, { new: true, runValidators: true })
         .then((user) => {
           if (!user) {
-            throw new NotFoundError('Пользователь не найден.');
+            throw new NotFoundError(NOT_FOUND_MESSAGE);
           }
           res.send({ email: user.email, name: user.name });
         })
         .catch((err) => {
-          if (err.name === 'ValidationError') {
-            throw new BadRequestError('Переданы некорректные данные в метод создания пользователя.');
+          if (err.name === VALIDATION_ERROR) {
+            throw new BadRequestError(BAD_REQUEST_MESSAGE);
           }
-          if (err.name === 'CastError') {
-            throw new BadRequestError('Переданы некорректные данные.');
+          if (err.name === CAST_ERROR) {
+            throw new BadRequestError(BAD_REQUEST_MESSAGE);
           }
         })
         .catch(next);
     } else {
-      throw new BadRequestError('Переданы некорректные данные.');
+      throw new BadRequestError(BAD_REQUEST_MESSAGE);
     }
   },
 
@@ -82,16 +87,16 @@ module.exports = {
     User.findOne({ email })
       .then((user) => {
         if (!user) {
-          throw new NotFoundError('Пользователь не найден.');
+          throw new NotFoundError(NOT_FOUND_MESSAGE);
         }
         res.send({ email: user.email, name: user.name });
       })
       .catch((err) => {
-        if (err.name === 'ValidationError') {
-          throw new BadRequestError('Переданы некорректные данные в метод изменения аватара.');
+        if (err.name === VALIDATION_ERROR) {
+          throw new BadRequestError(BAD_REQUEST_MESSAGE);
         }
-        if (err.name === 'CastError') {
-          throw new BadRequestError('Переданы некорректные данные.');
+        if (err.name === CAST_ERROR) {
+          throw new BadRequestError(BAD_REQUEST_MESSAGE);
         }
       })
       .catch(next);
@@ -108,7 +113,7 @@ module.exports = {
           })
           .send({ message: `Аутентификация прошла успешно. Добро пожаловать, ${user.name}!` });
       })
-      .catch(() => { throw new UnauthorizedError('Неправильные почта или пароль'); })
+      .catch(() => { throw new UnauthorizedError(AUTHORIZATION_FAIL_MESSAGE); })
       .catch(next);
   },
 };

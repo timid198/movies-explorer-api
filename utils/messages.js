@@ -1,0 +1,41 @@
+require('dotenv').config();
+
+const {
+  BAD_REQUEST_MESSAGE = 'Переданы некорректные данные.',
+  BAD_REQUEST_CODE = 400,
+  CAST_ERROR = 'CastError',
+  VALIDATION_ERROR = 'ValidationError',
+  UNAUTHORIZED_MESSAGE = 'Необходима авторизация.',
+  AUTHORIZATION_FAIL_MESSAGE = 'Неправильные почта или пароль.',
+  UNAUTHORIZED_CODE = 401,
+  AUTHORIZED_BUT_FORBIDDEN_MESSAGE = 'Вы пытаетесь изменить не свои данные.',
+  AUTHORIZED_BUT_FORBIDDEN_CODE = 403,
+  NOT_FOUND_MESSAGE = 'Ресурс не найден.',
+  NOT_FOUND_CODE = 404,
+  CONFLICT_MESSAGE = 'Адрес электронной почты уже используется.',
+  MONGO_ERR_CODE = 11000,
+  MONGO_ERROR = 'MongoError',
+  CONFLICT_CODE = 409,
+  SERVER_MESSAGE = 'На сервере произошла ошибка.',
+  SERVER_CODE = 500,
+} = process.env;
+
+module.exports = {
+  BAD_REQUEST_MESSAGE,
+  BAD_REQUEST_CODE,
+  CAST_ERROR,
+  VALIDATION_ERROR,
+  UNAUTHORIZED_MESSAGE,
+  AUTHORIZATION_FAIL_MESSAGE,
+  UNAUTHORIZED_CODE,
+  AUTHORIZED_BUT_FORBIDDEN_MESSAGE,
+  AUTHORIZED_BUT_FORBIDDEN_CODE,
+  NOT_FOUND_MESSAGE,
+  NOT_FOUND_CODE,
+  CONFLICT_MESSAGE,
+  MONGO_ERR_CODE,
+  MONGO_ERROR,
+  CONFLICT_CODE,
+  SERVER_MESSAGE,
+  SERVER_CODE,
+};

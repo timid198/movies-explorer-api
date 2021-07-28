@@ -1,7 +1,9 @@
+const { AUTHORIZED_BUT_FORBIDDEN_CODE } = require('../utils/messages');
+
 class AuthorizedButForbiddenError extends Error {
   constructor(message) {
     super(message);
-    this.statusCode = 403;
+    this.statusCode = AUTHORIZED_BUT_FORBIDDEN_CODE;
   }
 }
 

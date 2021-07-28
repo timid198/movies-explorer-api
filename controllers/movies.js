@@ -1,4 +1,9 @@
 const Movie = require('../models/movie');
+
+const {
+  CAST_ERROR, BAD_REQUEST_MESSAGE, NOT_FOUND_MESSAGE,
+  AUTHORIZED_BUT_FORBIDDEN_CODE, NOT_FOUND_CODE, AUTHORIZED_BUT_FORBIDDEN_MESSAGE,
+} = require('../utils/messages');
 const BadRequestError = require('../errors/bad-request-err');
 const AuthorizedButForbiddenError = require('../errors/authorized-but-forbidden-err');
 const NotFoundError = require('../errors/not-found-err');
@@ -27,8 +32,8 @@ module.exports = {
         res.send(movie);
       })
       .catch((err) => {
-        if (err.name === 'CastError') {
-          throw new BadRequestError('Переданы некорректные данные в метод создания карточки.');
+        if (err.name === CAST_ERROR) {
+          throw new BadRequestError(BAD_REQUEST_MESSAGE);
         }
       })
       .catch(next);
@@ -39,21 +44,21 @@ module.exports = {
     Movie.findById(req.params.movieId)
       .then((movie) => {
         if (!movie) {
-          throw new NotFoundError('Карточка не найдена.');
+          throw new NotFoundError(NOT_FOUND_MESSAGE);
         }
         if (req.user._id === movie.owner._id.toString()) {
           Movie.findByIdAndRemove(movieIdentificator)
             .then(() => res.send({ message: 'Фильм удалён из избранных.' }));
         } else {
-          throw new AuthorizedButForbiddenError('Вы пытаетесь изменить не свои данные.');
+          throw new AuthorizedButForbiddenError(AUTHORIZED_BUT_FORBIDDEN_MESSAGE);
         }
       })
       .catch((err) => {
-        if (err.statusCode === 404 || err.statusCode === 403) {
+        if (err.statusCode === NOT_FOUND_CODE || err.statusCode === AUTHORIZED_BUT_FORBIDDEN_CODE) {
           throw err;
         }
-        if (err.name === 'CastError') {
-          throw new BadRequestError('Переданы некорректные данные.');
+        if (err.name === CAST_ERROR) {
+          throw new BadRequestError(BAD_REQUEST_MESSAGE);
         }
       })
       .catch(next);

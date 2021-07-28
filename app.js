@@ -1,21 +1,16 @@
 require('dotenv').config();
 const express = require('express');
 const helmet = require('helmet');
-const rateLimit = require('express-rate-limit');
 const cookieParser = require('cookie-parser');
 const mongoose = require('mongoose');
+const limiter = require('./ratelimit');
 const routes = require('./routes/index');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 const celebrateError = require('./errors/celebrate-error');
 const errorHandler = require('./middlewares/error-handler');
-const { PORT, MONGO_URL } = require('./constants');
+const { PORT, MONGO_URL } = require('./utils/constants');
 
 const app = express();
-
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 100,
-});
 
 mongoose.connect(MONGO_URL, {
   useNewUrlParser: true,
