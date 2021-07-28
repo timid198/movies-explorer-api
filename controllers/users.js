@@ -2,7 +2,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 
-const { NODE_ENV, JWT_SECRET } = require('../utils/constants');
+const { NODE_ENV, JWT_SECRET } = process.env;
 const {
   BAD_REQUEST_MESSAGE, CAST_ERROR, VALIDATION_ERROR, MONGO_ERR_CODE,
   MONGO_ERROR, CONFLICT_MESSAGE, NOT_FOUND_MESSAGE, UNAUTHORIZED_MESSAGE,
