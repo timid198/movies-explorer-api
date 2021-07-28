@@ -4,8 +4,11 @@ const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 const cookieParser = require('cookie-parser');
 const mongoose = require('mongoose');
-
-const { PORT } = process.env;
+const routes = require('./routes/index');
+const { requestLogger, errorLogger } = require('./middlewares/logger');
+const celebrateError = require('./errors/celebrate-error');
+const errorHandler = require('./middlewares/error-handler');
+const { PORT, MONGO_URL } = require('./constants');
 
 const app = express();
 
@@ -14,28 +17,21 @@ const limiter = rateLimit({
   max: 100,
 });
 
-mongoose.connect('mongodb://localhost:27017/bitfilmsdb', {
+mongoose.connect(MONGO_URL, {
   useNewUrlParser: true,
   useCreateIndex: true,
   useFindAndModify: false,
   useUnifiedTopology: true,
 });
 
+app.use(requestLogger);
 app.use(helmet());
-
+app.use(limiter);
 app.use(cookieParser());
 app.use(express.json());
-// requests logger here
-app.use(limiter);
-
-// unprotected routes here
-
-// auth route
-
-// protected routes here
-
-// error logger here
-
-// error middlewares
+app.use(routes);
+app.use(errorLogger);
+app.use(celebrateError);
+app.use(errorHandler);
 
 app.listen(PORT);
