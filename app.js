@@ -6,7 +6,8 @@ const mongoose = require('mongoose');
 const limiter = require('./utils/ratelimit');
 const routes = require('./routes/index');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
-const celebrateError = require('./errors/celebrate-error');
+const { errors } = require('celebrate');
+// const celebrateError = require('./errors/celebrate-error');
 const errorHandler = require('./middlewares/error-handler');
 const { PORT, MONGO_URL } = require('./utils/constants');
 
@@ -26,7 +27,8 @@ app.use(cookieParser());
 app.use(express.json());
 app.use(routes);
 app.use(errorLogger);
-app.use(celebrateError);
+app.use(errors());
+// app.use(celebrateError);
 app.use(errorHandler);
 
 app.listen(PORT);
