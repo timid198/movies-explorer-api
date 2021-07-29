@@ -41,10 +41,8 @@ module.exports = {
 
   deleteMovieById(req, res, next) {
     const { movieId } = req.params;
-    console.log(req.params);
     Movie.findOne({ movieId })
       .then((movie) => {
-        console.log(movie);
         if (!movie) {
           throw new NotFoundError(NOT_FOUND_MESSAGE);
         }

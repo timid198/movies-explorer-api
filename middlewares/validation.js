@@ -100,7 +100,7 @@ const validateMovieCreateBody = celebrate({
       return helpers.message('Неправильная ссылка.');
     })
       .messages({ 'string.required': 'Поле "thumbnail" должно быть заполнено.' }),
-    movieId: Joi.number().required().messages({ 'number.required': 'Поле "movieId" должно быть заполнено' }),
+    movieId: Joi.number().required().messages({ 'number.required': 'Поле "movieId" должно быть заполнено', 'number.base': 'Поле "movieId" должно быть числом.' }),
     nameRU: Joi.string().required().messages({ 'string.required': 'Поле "nameRU" должно быть заполнено' }),
     nameEN: Joi.string().required().messages({ 'string.required': 'Поле "nameRU" должно быть заполнено' }),
   }),
