@@ -73,7 +73,10 @@ const validateMovieCreateBody = celebrate({
   body: Joi.object().keys({
     country: Joi.string().required().messages({ 'string.required': 'Поле "country" должно быть заполнено' }),
     director: Joi.string().required().messages({ 'string.required': 'Поле "director" должно быть заполнено' }),
-    duration: Joi.number().required().messages({ 'number.required': 'Поле "duration" должно быть заполнено' }),
+    duration: Joi.number().required().messages({
+      'number.required': 'Поле "duration" должно быть заполнено',
+      'number.number': 'Поле "duration" должно быть числом.',
+    }),
     year: Joi.string().required().messages({ 'string.required': 'Поле "year" должно быть заполнено' }),
     description: Joi.string().required().messages({ 'string.required': 'Поле "description" должно быть заполнено' }),
     image: Joi.string().required().custom((value, helpers) => {
