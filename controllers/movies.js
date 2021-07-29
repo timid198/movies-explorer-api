@@ -40,14 +40,14 @@ module.exports = {
   },
 
   deleteMovieById(req, res, next) {
-    const movieIdentificator = req.params.movieId;
-    Movie.findById(req.params.movieId)
+    const { movieId } = req.params;
+    Movie.findOne({ movieId })
       .then((movie) => {
         if (!movie) {
           throw new NotFoundError(NOT_FOUND_MESSAGE);
         }
         if (req.user._id === movie.owner._id.toString()) {
-          Movie.findByIdAndRemove(movieIdentificator)
+          Movie.findOneAndRemove(movieId)
             .then(() => res.send({ message: 'Фильм удалён из избранных.' }));
         } else {
           throw new AuthorizedButForbiddenError(AUTHORIZED_BUT_FORBIDDEN_MESSAGE);

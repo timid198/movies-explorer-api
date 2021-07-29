@@ -1,14 +1,13 @@
 const { Joi, celebrate } = require('celebrate');
-const { ObjectId } = require('mongoose').Types;
 const validator = require('validator');
 
-const validateObjId = celebrate({
+const validateNumId = celebrate({
   params: Joi.object().keys({
-    _id: Joi.string().required().custom((value, helpers) => {
-      if (ObjectId.isValid(value)) {
+    movieId: Joi.string().required().custom((value, helpers) => {
+      if (validator.isNumeric(value)) {
         return value;
       }
-      return helpers.message('Невалидный _id');
+      return helpers.message('Невалидный id');
     }),
   }),
 });
@@ -105,7 +104,7 @@ const validateMovieCreateBody = celebrate({
 });
 
 module.exports = {
-  validateObjId,
+  validateNumId,
   validateCreateUserBody,
   validateUserBodyLogin,
   validateUserBodyUpdate,
