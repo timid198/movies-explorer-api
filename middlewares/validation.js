@@ -4,7 +4,7 @@ const validator = require('validator');
 
 const validateObjId = celebrate({
   params: Joi.object().keys({
-    _id: Joi.string().required().custom((value, helpers) => {
+    movieId: Joi.string().required().custom((value, helpers) => {
       if (ObjectId.isValid(value)) {
         return value;
       }
