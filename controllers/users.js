@@ -5,7 +5,7 @@ const User = require('../models/user');
 const { NODE_ENV, JWT_SECRET } = process.env;
 const {
   BAD_REQUEST_MESSAGE, CAST_ERROR, VALIDATION_ERROR, MONGO_ERR_CODE,
-  MONGO_ERROR, CONFLICT_MESSAGE, NOT_FOUND_MESSAGE, UNAUTHORIZED_MESSAGE,
+  MONGO_ERROR, CONFLICT_MESSAGE, NOT_FOUND_MESSAGE, UNAUTHORIZED_MESSAGE, UNAUTHORIZED_CODE,
   AUTHORIZED_BUT_FORBIDDEN_CODE, NOT_FOUND_CODE, AUTHORIZATION_FAIL_MESSAGE,
 } = require('../utils/messages');
 const BadRequestError = require('../errors/bad-request-err');
@@ -26,11 +26,12 @@ module.exports = {
         .then((user) => res.send({ email: user.email, name: user.name }))
         .catch((err) => {
           if (err.name === VALIDATION_ERROR) {
-            throw new BadRequestError(BAD_REQUEST_MESSAGE);
+            return new BadRequestError(BAD_REQUEST_MESSAGE);
           }
           if (err.name === MONGO_ERROR && err.code === MONGO_ERR_CODE) {
-            throw new ConflictError(CONFLICT_MESSAGE);
+            return new ConflictError(CONFLICT_MESSAGE);
           }
+          throw err;
         }))
       .catch(next);
   },
@@ -52,8 +53,9 @@ module.exports = {
           throw err;
         }
         if (err.name === CAST_ERROR) {
-          throw new BadRequestError(BAD_REQUEST_MESSAGE);
+          return new BadRequestError(BAD_REQUEST_MESSAGE);
         }
+        return true;
       })
       .catch(next);
   },
@@ -75,6 +77,10 @@ module.exports = {
           if (err.name === CAST_ERROR) {
             throw new BadRequestError(BAD_REQUEST_MESSAGE);
           }
+          if (err.name === MONGO_ERROR && err.code === MONGO_ERR_CODE) {
+            throw new ConflictError(CONFLICT_MESSAGE);
+          }
+          throw err;
         })
         .catch(next);
     } else {
@@ -98,6 +104,7 @@ module.exports = {
         if (err.name === CAST_ERROR) {
           throw new BadRequestError(BAD_REQUEST_MESSAGE);
         }
+        throw err;
       })
       .catch(next);
   },
@@ -113,7 +120,12 @@ module.exports = {
           })
           .send({ message: `Аутентификация прошла успешно. Добро пожаловать, ${user.name}!` });
       })
-      .catch(() => { throw new UnauthorizedError(AUTHORIZATION_FAIL_MESSAGE); })
+      .catch((err) => {
+        if (err.name === UNAUTHORIZED_CODE) {
+          throw new UnauthorizedError(AUTHORIZATION_FAIL_MESSAGE);
+        }
+        throw err;
+      })
       .catch(next);
   },
 };

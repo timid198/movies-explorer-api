@@ -1,6 +1,8 @@
 require('dotenv').config();
 
 const {
+  VALIDATOR_EMAIL_VALIDITY_FAIL = 'Некорректная электронная почта.',
+  VALIDATOR_URL_VALIDITY_FAIL = 'Некорректная ссылка.',
   BAD_REQUEST_MESSAGE = 'Переданы некорректные данные.',
   BAD_REQUEST_CODE = 400,
   CAST_ERROR = 'CastError',
@@ -21,6 +23,8 @@ const {
 } = process.env;
 
 module.exports = {
+  VALIDATOR_EMAIL_VALIDITY_FAIL,
+  VALIDATOR_URL_VALIDITY_FAIL,
   BAD_REQUEST_MESSAGE,
   BAD_REQUEST_CODE,
   CAST_ERROR,

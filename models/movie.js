@@ -1,6 +1,8 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
 
+const { VALIDATOR_URL_VALIDITY_FAIL } = require('../utils/messages');
+
 const movieSchema = new mongoose.Schema({
   country: {
     type: String,
@@ -27,7 +29,7 @@ const movieSchema = new mongoose.Schema({
     required: true,
     validate: {
       validator: (value) => validator.isURL(value),
-      message: '{value} некорректная ссылка.',
+      message: VALIDATOR_URL_VALIDITY_FAIL,
     },
   },
   trailer: {
@@ -35,7 +37,7 @@ const movieSchema = new mongoose.Schema({
     required: true,
     validate: {
       validator: (value) => validator.isURL(value),
-      message: '{value} некорректная ссылка.',
+      message: VALIDATOR_URL_VALIDITY_FAIL,
     },
   },
   thumbnail: {
@@ -43,7 +45,7 @@ const movieSchema = new mongoose.Schema({
     required: true,
     validate: {
       validator: (value) => validator.isURL(value),
-      message: '{value} некорректная ссылка.',
+      message: VALIDATOR_URL_VALIDITY_FAIL,
     },
   },
   owner: {

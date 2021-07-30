@@ -70,7 +70,7 @@ const validateUserBodyUpdate = celebrate({
   }),
 });
 
-const validateMovieCreateBody = celebrate({
+const validateMovieBody = celebrate({
   body: Joi.object().keys({
     country: Joi.string().required().messages({ 'string.required': 'Поле "country" должно быть заполнено' }),
     director: Joi.string().required().messages({ 'string.required': 'Поле "director" должно быть заполнено' }),
@@ -112,5 +112,5 @@ module.exports = {
   validateCreateUserBody,
   validateUserBodyLogin,
   validateUserBodyUpdate,
-  validateMovieCreateBody,
+  validateMovieBody,
 };

@@ -4,7 +4,7 @@ const validator = require('validator');
 
 const UnauthorizedError = require('../errors/unauthorized-err');
 
-const { AUTHORIZATION_FAIL_MESSAGE } = require('../utils/messages');
+const { VALIDATOR_EMAIL_VALIDITY_FAIL, AUTHORIZATION_FAIL_MESSAGE } = require('../utils/messages');
 
 const userSchema = new mongoose.Schema({
   email: {
@@ -13,7 +13,7 @@ const userSchema = new mongoose.Schema({
     unique: true,
     validate: {
       validator: (value) => validator.isEmail(value),
-      message: '{value} некорректная электронная почта.',
+      message: VALIDATOR_EMAIL_VALIDITY_FAIL,
     },
   },
   password: {

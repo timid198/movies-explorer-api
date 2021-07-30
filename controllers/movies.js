@@ -33,33 +33,37 @@ module.exports = {
       })
       .catch((err) => {
         if (err.name === CAST_ERROR) {
-          throw new BadRequestError(BAD_REQUEST_MESSAGE);
+          return new BadRequestError(BAD_REQUEST_MESSAGE);
         }
+        throw err;
       })
       .catch(next);
   },
 
-  deleteMovieById(req, res, next) {
+  getAllMovies(req, res, next) {
+    Movie.find({})
+      .then((movies) => res.send(movies))
+      .catch(next);
+  },
+
+  deleteMovie(req, res, next) {
     const { movieId } = req.params;
     Movie.findById(movieId)
+      .orFail(new NotFoundError(NOT_FOUND_MESSAGE))
       .then((movie) => {
-        if (!movie) {
-          throw new NotFoundError(NOT_FOUND_MESSAGE);
+        if (req.user._id.toString() === movie.owner._id.toString()) {
+          return movie.remove().then(() => res.send({ message: 'Фильм удалён из избранных.' }));
         }
-        if (req.user._id === movie.owner._id.toString()) {
-          Movie.findByIdAndRemove(movieId)
-            .then(() => res.send({ message: 'Фильм удалён из избранных.' }));
-        } else {
-          throw new AuthorizedButForbiddenError(AUTHORIZED_BUT_FORBIDDEN_MESSAGE);
-        }
+        throw new AuthorizedButForbiddenError(AUTHORIZED_BUT_FORBIDDEN_MESSAGE);
       })
       .catch((err) => {
         if (err.statusCode === NOT_FOUND_CODE || err.statusCode === AUTHORIZED_BUT_FORBIDDEN_CODE) {
           throw err;
         }
         if (err.name === CAST_ERROR) {
-          throw new BadRequestError(BAD_REQUEST_MESSAGE);
+          return new BadRequestError(BAD_REQUEST_MESSAGE);
         }
+        return true;
       })
       .catch(next);
   },
