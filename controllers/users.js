@@ -6,10 +6,10 @@ const { NODE_ENV, JWT_SECRET } = process.env;
 const {
   BAD_REQUEST_MESSAGE, CAST_ERROR, VALIDATION_ERROR, MONGO_ERR_CODE,
   MONGO_ERROR, CONFLICT_MESSAGE, NOT_FOUND_MESSAGE, UNAUTHORIZED_MESSAGE, UNAUTHORIZED_CODE,
-  AUTHORIZED_BUT_FORBIDDEN_CODE, NOT_FOUND_CODE, AUTHORIZATION_FAIL_MESSAGE,
+  AUTHORIZATION_FAIL_MESSAGE, AUTH_SUCCESS,
 } = require('../utils/messages');
 const BadRequestError = require('../errors/bad-request-err');
-const AuthorizedButForbiddenError = require('../errors/authorized-but-forbidden-err');
+const ForbiddenError = require('../errors/forbidden-err');
 const UnauthorizedError = require('../errors/unauthorized-err');
 const NotFoundError = require('../errors/not-found-err');
 const ConflictError = require('../errors/conflict-err');
@@ -26,10 +26,10 @@ module.exports = {
         .then((user) => res.send({ email: user.email, name: user.name }))
         .catch((err) => {
           if (err.name === VALIDATION_ERROR) {
-            return new BadRequestError(BAD_REQUEST_MESSAGE);
+            throw new BadRequestError(BAD_REQUEST_MESSAGE);
           }
           if (err.name === MONGO_ERROR && err.code === MONGO_ERR_CODE) {
-            return new ConflictError(CONFLICT_MESSAGE);
+            throw new ConflictError(CONFLICT_MESSAGE);
           }
           throw err;
         }))
@@ -46,16 +46,13 @@ module.exports = {
         if (`${user._id}` === `${authUser}`) {
           res.send({ email: user.email, name: user.name });
         }
-        throw new AuthorizedButForbiddenError(UNAUTHORIZED_MESSAGE);
+        throw new ForbiddenError(UNAUTHORIZED_MESSAGE);
       })
       .catch((err) => {
-        if (err.statusCode === NOT_FOUND_CODE || err.statusCode === AUTHORIZED_BUT_FORBIDDEN_CODE) {
-          throw err;
-        }
         if (err.name === CAST_ERROR) {
-          return new BadRequestError(BAD_REQUEST_MESSAGE);
+          throw new BadRequestError(BAD_REQUEST_MESSAGE);
         }
-        return true;
+        throw err;
       })
       .catch(next);
   },
@@ -118,7 +115,7 @@ module.exports = {
           .cookie('jwt', token, {
             httpOnly: true,
           })
-          .send({ message: `Аутентификация прошла успешно. Добро пожаловать, ${user.name}!` });
+          .send({ message: AUTH_SUCCESS(user) });
       })
       .catch((err) => {
         if (err.name === UNAUTHORIZED_CODE) {
