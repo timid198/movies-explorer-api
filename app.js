@@ -20,8 +20,8 @@ mongoose.connect(MONGO_URL, {
   useUnifiedTopology: true,
 });
 
-app.use(allowedCors);
 app.use(requestLogger);
+app.use(allowedCors);
 app.use(helmet());
 app.use(limiter);
 app.use(cookieParser());
