@@ -21,7 +21,6 @@ mongoose.connect(MONGO_URL, {
 });
 
 app.use(requestLogger);
-console.log();
 app.use(allowedCors);
 app.use(helmet());
 app.use(limiter);
