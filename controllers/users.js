@@ -115,7 +115,7 @@ module.exports = {
           .cookie('jwt', token, {
             httpOnly: true,
           })
-          .send({ message: AUTH_SUCCESS(user) });
+          .send({ message: AUTH_SUCCESS(user), jwt });
       })
       .catch((err) => {
         if (err.name === UNAUTHORIZED_CODE) {
