@@ -1,4 +1,4 @@
 module.exports = (req, res) => {
   res.clearCookie('jwt');
-  return res.status(200).redirect('/');
+  return res.send({ message: 'Выполнен выход из аккаунта' }).status(200).redirect('/');
 };
