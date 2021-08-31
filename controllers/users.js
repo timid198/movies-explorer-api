@@ -44,7 +44,7 @@ module.exports = {
           throw new NotFoundError(NOT_FOUND_MESSAGE);
         }
         if (`${user._id}` === `${authUser}`) {
-          res.send({ email: user.email, name: user.name });
+          res.send({ email: user.email, name: user.name, _id: user._id });
         }
         throw new ForbiddenError(UNAUTHORIZED_MESSAGE);
       })
