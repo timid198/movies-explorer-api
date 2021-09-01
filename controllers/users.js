@@ -116,7 +116,7 @@ module.exports = {
             maxAge: 604800,
             httpOnly: true,
           })
-          .send({ message: AUTH_SUCCESS(user) }, jwt);
+          .send({ message: AUTH_SUCCESS(user) });
       })
       .catch((err) => {
         if (err.name === UNAUTHORIZED_CODE) {
