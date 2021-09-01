@@ -110,7 +110,7 @@ module.exports = {
     const { email, password } = req.body;
     return User.findUserByCredentials({ email, password })
       .then((user) => {
-        const token = jwt.sign({ _id: user._id, email }, NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret', { expiresIn: '7d' });
+        const token = jwt.sign({ _id: user._id, email }, NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret', { expiresIn: 86400 * 7 });
         res
           .cookie('jwt', token, {
             httpOnly: true,
