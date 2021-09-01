@@ -46,8 +46,7 @@ module.exports = {
       .orFail(new NotFoundError(NOT_FOUND_MESSAGE))
       .then((movie) => {
         if (req.user._id.toString() === movie.owner._id.toString()) {
-          return movie.remove().then(() => Movie.find({})
-          .then((movies) => res.send({ message: RESPONCE_FILM_DELETED, movies })));
+          return movie.remove().then(() => res.send({ message: RESPONCE_FILM_DELETED }));
         }
         throw new ForbiddenError(FORBIDDEN_MESSAGE);
       })
