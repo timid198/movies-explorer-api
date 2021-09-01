@@ -113,6 +113,7 @@ module.exports = {
         const token = jwt.sign({ _id: user._id, email }, NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret', { expiresIn: 86400 * 7 });
         res
           .cookie('jwt', token, {
+            maxAge: 604800,
             httpOnly: true,
           })
           .send({ message: AUTH_SUCCESS(user) }, jwt);
