@@ -115,7 +115,6 @@ module.exports = {
           .cookie('jwt', token, {
             maxAge: 3600000,
             httpOnly: true,
-            sameSite: 'none',
           })
           .send({ message: AUTH_SUCCESS(user) });
       })

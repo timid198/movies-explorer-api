@@ -35,7 +35,8 @@ module.exports = {
   },
 
   getAllMovies(req, res, next) {
-    Movie.find({ owner: req.user._id })
+    const { userId } = req.user.userId;
+    Movie.find({ owner: userId })
       .then((movies) => res.send(movies))
       .catch(next);
   },
