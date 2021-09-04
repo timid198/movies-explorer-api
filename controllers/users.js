@@ -65,7 +65,7 @@ module.exports = {
           if (!user) {
             throw new NotFoundError(NOT_FOUND_MESSAGE);
           }
-          res.send({ email: user.email, name: user.name });
+          res.send({ email: user.email, name: user.name, message: 'Профиль обновлён.' });
         })
         .catch((err) => {
           if (err.name === VALIDATION_ERROR) {
