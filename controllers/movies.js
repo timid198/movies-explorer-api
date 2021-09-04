@@ -29,7 +29,6 @@ module.exports = {
       owner: req.user._id,
     })
       .then((movie) => {
-        console.log(res);
         res.send(movie);
       })
       .catch(next);
