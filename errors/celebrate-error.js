@@ -3,6 +3,7 @@ const BadRequestError = require('./bad-request-err');
 
 const celebrateError = (err, req, res, next) => {
   if (isCelebrateError(err)) {
+    console.log(err);
     if (err.details.get('params')) {
       throw new BadRequestError(err.details.get('params').message);
     }
