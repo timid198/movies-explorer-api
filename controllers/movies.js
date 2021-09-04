@@ -29,13 +29,13 @@ module.exports = {
       owner: req.user._id,
     })
       .then((movie) => {
+        console.log(res);
         res.send(movie);
       })
       .catch(next);
   },
 
   getAllMovies(req, res, next) {
-    console.log(req.user._id);
     Movie.find({ owner: req.user._id })
       .then((movies) => res.send(movies))
       .catch(next);
